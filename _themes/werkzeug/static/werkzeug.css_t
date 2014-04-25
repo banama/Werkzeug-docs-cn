@@ -18,7 +18,7 @@
  
 body {
     font-family: {{ font_family }};
-    font-size: 15px;
+    font-size: 17px;
     background-color: white;
     color: #000;
     margin: 0;
@@ -85,7 +85,7 @@ div.sphinxsidebar a:hover {
 }
  
 div.sphinxsidebar {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.5;
 }
 
@@ -294,7 +294,7 @@ table.field-list, table.footnote {
 }
 
 table.footnote {
-    margin: 15px 0;
+    margin: 17px 0;
     width: 100%;
     border: 1px solid #eee;
     background: #fdfdfd;

@@ -1,7 +1,7 @@
 ======================
-Documentation Overview
+文档概览
 ======================
 
-Welcome to the Werkzeug |version| documentation.
+欢迎阅读 Werkzeug |version| 文档。
 
 .. include:: contents.rst.inc

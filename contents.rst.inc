@@ -1,8 +1,7 @@
 Getting Started
 ---------------
 
-If you are new to Werkzeug or WSGI development in general you
-should start here.
+一般来说，如果你是刚接触Werlzeug或WSGI开发，你应该从这里开始。
 
 .. toctree::
    :maxdepth: 2
@@ -14,11 +13,10 @@ should start here.
    quickstart
    python3
 
-Serving and Testing
+服务和测试
 -------------------
 
-The development server and testing support and management script
-utilities are covered here:
+支持开发环境服务器和测试，管理脚本工具集包括如下:
 
 .. toctree::
    :maxdepth: 2
@@ -27,8 +25,8 @@ utilities are covered here:
    test
    debug
 
-Reference
----------
+参考
+----
 
 .. toctree::
    :maxdepth: 2
@@ -43,29 +41,27 @@ Reference
    middlewares
    exceptions
 
-Deployment
-----------
+部署
+----
 
-This section covers running your application in production on a web
-server such as Apache or lighttpd.
+这部分内容包含如何在生产环境下部署你的应用到一个服务器，比如Apache或lighttpd。
 
 .. toctree::
    :maxdepth: 3
 
    deployment/index
 
-Contributed Modules
+贡献模块
 -------------------
 
-A lot of useful code contributed by the community is shipped with Werkzeug
-as part of the `contrib` module:
+社区贡献的很多有用代码都将Werkzeug作为模块的一部分。
 
 .. toctree::
    :maxdepth: 3
 
    contrib/index
 
-Additional Information
+额外说明
 ----------------------
 
 .. toctree::
@@ -76,8 +72,7 @@ Additional Information
    request_data
    changes
 
-If you can’t find the information you’re looking for, have a look at the
-index or try to find it using the search function:
+如果你找不到想要的信息，可以查看目录或者尝试搜索功能。
 
 *   :ref:`genindex`
 *   :ref:`search`
