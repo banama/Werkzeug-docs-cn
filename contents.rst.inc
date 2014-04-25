@@ -1,7 +1,7 @@
 Getting Started
 ---------------
 
-一般来说，如果你是刚接触Werlzeug或WSGI开发，你应该从这里开始。
+一般来说，如果你是刚接触Werkzeug或WSGI开发，你应该从这里开始。
 
 .. toctree::
    :maxdepth: 2
