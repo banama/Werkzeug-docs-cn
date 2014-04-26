@@ -4,11 +4,11 @@
 URL Routing
 ===========
 
-.. module:: werkzeug.routing
+.. module:: routing
 
 .. testsetup::
 
-   from werkzeug.routing import *
+   from routing import *
 
 When it comes to combining multiple controller or view functions (however
 you want to call them), you need a dispatcher.  A simple way would be
