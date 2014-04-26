@@ -1,102 +1,88 @@
-============
-Installation
-============
+====
+安装
+====
 
-Werkzeug requires at least Python 2.6 to work correctly.  If you do need
-to support an older version you can download an older version of Werkzeug
-though we strongly recommend against that.  Werkzeug currently has
-experimental support for Python 3.  For more information about the
-Python 3 support see :ref:`python3`.
+Werkzeug 要求 Python 2.6 以上版本。如果你需要支持 Pyhthon <2.6 版本可以下载老
+版本的 Werkzeug (强烈推荐 Pyhton 2.6 以上版本)。Werkzeug目前已经支持 Python 3
+。更多信息请看 :ref:`python3`.
 
 
-Installing a released version
-=============================
+安装一个发行版
+=============
 
-As a Python egg (via easy_install or pip)
------------------------------------------
+安装一个egg包 (通过 easy_install 或 pip)
+----------------------------------------
 
-You can install the most recent Werkzeug version using `easy_install`_::
+你可以安装最新的 Werkzeug 版本通过 `easy_install`_::
 
     easy_install Werkzeug
 
-Alternatively you can also use pip::
+另外你也可以使用pip::
 
     pip install Werkzeug
 
-Either way we strongly recommend using these tools in combination with
-:ref:`virtualenv`.
+我们强烈推荐结合:ref:`virtualenv` 使用这些工具。
 
-This will install a Werkzeug egg in your Python installation's `site-packages`
-directory.
+这将会在 `site-packages` 目录安装一个 Werkzeug egg 包。
 
-From the tarball release
+从压缩包安装
 -------------------------
 
-1.  Download the most recent tarball from the `download page`_.
-2.  Unpack the tarball.
-3.  ``python setup.py install``
+1.  从 `download page`_ 下载最新的压缩包。
+2.  解压压缩包。
+3.  执行 ``python setup.py install`` 命令。
 
-Note that the last command will automatically download and install
-`setuptools`_ if you don't already have it installed.  This requires a working
-Internet connection.
+注意如果你没有安装 `setuptools`_  执行最后一条命令将会自动下载和安装。这需要联
+网。
 
-This will install Werkzeug into your Python installation's `site-packages`
-directory.
+以上命令会将 Werkzeug 安装到 `site-packages` 文件夹。
 
 
-Installing the development version
+安装开发版
 ==================================
 
-1.  Install `Git`_
+1.  安装 `Git`_
 2.  ``git clone git://github.com/mitsuhiko/werkzeug.git``
 3.  ``cd werkzeug``
-4.  ``pip install --editable .``
+4.  ``pip install --editable``
 
 .. _virtualenv:
 
 virtualenv
 ==========
 
-Virtualenv is probably what you want to use during development, and in
-production too if you have shell access there.
+Virtualenv 大概会是你想在开发环境下使用的软件。如果你有shell权限访问生产环境，
+你可能也会喜欢他。         
 
-What problem does virtualenv solve?  If you like Python as I do,
-chances are you want to use it for other projects besides Werkzeug-based
-web applications.  But the more projects you have, the more likely it is
-that you will be working with different versions of Python itself, or at
-least different versions of Python libraries.  Let's face it; quite often
-libraries break backwards compatibility, and it's unlikely that any serious
-application will have zero dependencies.  So what do you do if two or more
-of your projects have conflicting dependencies?
+virtualenv 解决了什么问题？如果你像我一样喜欢Python，你很可能会在基于 Werkzeug
+的 Web 应用之外使用Python。但是随着项目越来越多，你使用不同版本python的可能性
+越大，至少你有可能会用到支持不同Pytohn版本的库。我们不得不面对一种很常见的情况
+就是库是不向后兼容的，或者很少有应用没有依赖包。所以当然有两个甚至更多项目的时
+候你打算怎么解决依赖冲突？
 
-Virtualenv to the rescue!  It basically enables multiple side-by-side
-installations of Python, one for each project.  It doesn't actually
-install separate copies of Python, but it does provide a clever way
-to keep different project environments isolated.
+Virtualenv 正式为此而生！它允许你安装多个Python版本, 每个项目对应自己的Python。
+他其实并没有安装一个Python副本，而是通过很奇妙的方法来保持环境独立。
 
-So let's see how virtualenv works!
+下面让我门看看 virtualenv 是怎么工作的！
 
-If you are on Mac OS X or Linux, chances are that one of the following two
-commands will work for you::
+如果你使用 Mac OS X 或 Linux, 这里有两种安装方法供你选择::
 
     $ sudo easy_install virtualenv
 
-or even better::
+或者更好的方法::
 
     $ sudo pip install virtualenv
 
-One of these will probably install virtualenv on your system.  Maybe it's
-even in your package manager.  If you use Ubuntu, try::
+你可以通过上述命令在你的系统安装 virtualenv 。你甚至可以使用包管理器安装，如果
+你使用Ubuntu，可以尝试::
 
     $ sudo apt-get install python-virtualenv
 
-If you are on Windows and don't have the `easy_install` command, you must
-install it first.  Once you have it installed, run the same commands as
-above, but without the `sudo` prefix.
+如果你是用Windows，没有 `easy_install` 命令，你必须首先安装它。一旦安装成功，
+执行相同的命令，但是不需要带 `sudo` 前缀。
 
-Once you have virtualenv installed, just fire up a shell and create
-your own environment.  I usually create a project folder and an `env`
-folder within::
+一旦成功安装 virtualenv，打开 shell 创建你自己的环境。我经常会创建一个 myproje
+ct 文件夹，并在其中创建`env`文件夹::
 
     $ mkdir myproject
     $ cd myproject
@@ -104,28 +90,26 @@ folder within::
     New python executable in env/bin/python
     Installing setuptools............done.
 
-Now, whenever you want to work on a project, you only have to activate
-the corresponding environment.  On OS X and Linux, do the following::
+现在，无论何时只要你想在某个项目上工作，只需激活相应环境。在 OS X 和 Linux，按
+如下操作::
 
     $ . env/bin/activate
 
-(Note the space between the dot and the script name.  The dot means that
-this script should run in the context of the current shell.  If this command
-does not work in your shell, try replacing the dot with ``source``)
+(注意`.`和脚本名称之间的空格。`.`意味着这个脚本在当前shell下运行。如果这个命令
+在你的命令行无效, 尝试用 ``source`` 代替`.`)
 
-If you are a Windows user, the following command is for you::
+如果你是个 Windows 用户，可以使用以下命令::
 
     $ env\scripts\activate
 
-Either way, you should now be using your virtualenv (see how the prompt of
-your shell has changed to show the virtualenv).
+无论哪种方式，现在你已经可以使用 virtualenv 了(观察shell中切换到的Virtualenv提
+示)。
 
-Now you can just enter the following command to get Werkzeug activated in
-your virtualenv::
+ Werkzeug ::
 
     $ pip install Werkzeug
 
-A few seconds later you are good to go.
+几秒钟后你就可以使用werkzeug了.
 
 .. _download page: https://pypi.python.org/pypi/Werkzeug
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
