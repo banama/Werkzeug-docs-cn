@@ -21,7 +21,7 @@ Werkzeug 要求 Python 2.6 以上版本。如果你需要支持 Pyhthon <2.6 版
 
     pip install Werkzeug
 
-我们强烈推荐结合:ref:`virtualenv` 使用这些工具。
+我们强烈推荐结合 :ref:`virtualenv` 使用这些工具。
 
 这将会在 `site-packages` 目录安装一个 Werkzeug egg 包。
 
@@ -55,12 +55,12 @@ Virtualenv 大概会是你想在开发环境下使用的软件。如果你有she
 你可能也会喜欢他。         
 
 virtualenv 解决了什么问题？如果你像我一样喜欢Python，你很可能会在基于 Werkzeug
-的 Web 应用之外使用Python。但是随着项目越来越多，你使用不同版本python的可能性
-越大，至少你有可能会用到支持不同Pytohn版本的库。我们不得不面对一种很常见的情况
-就是库是不向后兼容的，或者很少有应用没有依赖包。所以当然有两个甚至更多项目的时
-候你打算怎么解决依赖冲突？
+的 Web 应用之外使用Python。但是随着项目越来越多，你使用不同版本python的可能性越
+大，至少你有可能会用到支持不同Pytohn版本的库。我们不得不面对一种很常见的情况就
+是库是不向后兼容的，或者很少有应用没有依赖包。所以当然有两个甚至更多项目的时候
+你打算怎么解决依赖冲突？
 
-Virtualenv 正式为此而生！它允许你安装多个Python版本, 每个项目对应自己的Python。
+Virtualenv 正是为此而生！它允许你安装多个Python版本, 每个项目对应自己的Python。
 他其实并没有安装一个Python副本，而是通过很奇妙的方法来保持环境独立。
 
 下面让我门看看 virtualenv 是怎么工作的！
@@ -82,7 +82,7 @@ Virtualenv 正式为此而生！它允许你安装多个Python版本, 每个项�
 执行相同的命令，但是不需要带 `sudo` 前缀。
 
 一旦成功安装 virtualenv，打开 shell 创建你自己的环境。我经常会创建一个 myproje
-ct 文件夹，并在其中创建`env`文件夹::
+ct 文件夹，并在其中创建 `env` 文件夹::
 
     $ mkdir myproject
     $ cd myproject
@@ -95,8 +95,8 @@ ct 文件夹，并在其中创建`env`文件夹::
 
     $ . env/bin/activate
 
-(注意`.`和脚本名称之间的空格。`.`意味着这个脚本在当前shell下运行。如果这个命令
-在你的命令行无效, 尝试用 ``source`` 代替`.`)
+(注意 `.` 和脚本名称之间的空格。 `.` 意味着这个脚本在当前shell下运行。如果这个命令
+在你的命令行无效, 尝试用 ``source`` 代替 `.`)
 
 如果你是个 Windows 用户，可以使用以下命令::
 
@@ -105,11 +105,11 @@ ct 文件夹，并在其中创建`env`文件夹::
 无论哪种方式，现在你已经可以使用 virtualenv 了(观察shell中切换到的Virtualenv提
 示)。
 
- Werkzeug ::
+ 安装Werkzeug ::
 
     $ pip install Werkzeug
 
-几秒钟后你就可以使用werkzeug了.
+几秒钟后你就可以使用werkzeug了。
 
 .. _download page: https://pypi.python.org/pypi/Werkzeug
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
