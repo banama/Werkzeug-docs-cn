@@ -1,46 +1,38 @@
 =================
-Werkzeug Tutorial
+Werkzeug 教程
 =================
 
 .. module:: werkzeug
 
-Welcome to the Werkzeug tutorial in which we will create a `TinyURL`_ clone
-that stores URLs in a redis instance.  The libraries we will use for this
-applications are `Jinja`_ 2 for the templates, `redis`_ for the database
-layer and, of course, Werkzeug for the WSGI layer.
+欢迎来到 Werkzeug 教程，我们将会实现一个类似 `TinyURL`_ 的网站来储存 URLS。我们
+将会使用的库有模板引擎 `Jinja`_ 2，数据层支持 `redis`_ ，当然还有 WSGI 协议层Werkzeug。
 
-You can use `pip` to install the required libraries::
+你可以使用 `pip` 来安装依赖库::
 
     pip install Jinja2 redis
 
-Also make sure to have a redis server running on your local machine.  If
-you are on OS X, you can use `brew` to install it::
+同时确定你的本地有一个 redis 服务，如果你是OS X系统，你可以使用 `brew` 来安装它::
 
     brew install redis
 
-If you are on Ubuntu or Debian, you can use apt-get::
+如果你是用 Ubuntu 或 Debian, 你可以使用 apt-get::
 
     sudo apt-get install redis
 
-Redis was developed for UNIX systems and was never really designed to
-work on Windows.  For development purposes, the unofficial ports however
-work well enough.  You can get them from `github
-<https://github.com/dmajkic/redis/downloads>`_.
+Redis 为 UNIX 系统开发，并没有考虑为 Windows 设计。对于开发来说，非官方的版本已
+经足够了，你可以从 `github<https://github.com/dmajkic/redis/downloads>`_ 得到它。
 
-Introducing Shortly
+简短介绍
 -------------------
 
-In this tutorial, we will together create a simple URL shortener service
-with Werkzeug.  Please keep in mind that Werkzeug is not a framework, it's
-a library with utilities to create your own framework or application and
-as such is very flexible.  The approach we use here is just one of many you
-can use.
+在这个教程中，我们将一起用 Werkzeug 创建一个短网址服务。请注意，Werkzeug 并不是
+一个框架，它是一个带着一些工具集的库，你可以通过它来创建你自己的框架或 Web 应用，
+。Werkzeug 是非常灵活的，这篇教程用到的一些方法只是 Werkzeug 的一部分。
 
-As data store, we will use `redis`_ here instead of a relational database
-to keep this simple and because that's the kind of job that `redis`_
-excels at.
+在数据层，为了保持简单，我们使用 `redis`_ 来代替关系型数据库，而且 `redis`_ 也擅
+长来做这些。
 
-The final result will look something like this:
+最终的结果将会看起来像这样:
 
 .. image:: _static/shortly.png
    :alt: a screenshot of shortly
@@ -49,7 +41,7 @@ The final result will look something like this:
 .. _Jinja: http://jinja.pocoo.org/
 .. _redis: http://redis.io/
 
-Step 0: A Basic WSGI Introduction
+Step 0: 一个基础的 WSGI 介绍
 ---------------------------------
 
 Werkzeug is a utility library for WSGI.  WSGI itself is a protocol or
