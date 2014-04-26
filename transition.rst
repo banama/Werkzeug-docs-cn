@@ -1,40 +1,33 @@
-Transition to Werkzeug 1.0
+过渡到 Werkzeug 1.0
 ==========================
 
-Werkzeug originally had a magical import system hook that enabled
-everything to be imported from one module and still loading the actual
-implementations lazily as necessary.  Unfortunately this turned out be
-slow and also unreliable on alternative Python implementations and
-Google's App Engine.
+Werkzeug 原本有一个神奇的导入系统钩子，如果启用它则可以从一个模块导入所有东西而且
+还可以根据实际需要选择性加载。不幸的是，这种方法被证明是效率低下的，用它来代替Pyt
+hon实现和GAE是不可靠的。
 
-Starting with 0.7 we recommend against the short imports and strongly
-encourage starting importing from the actual implementation module.
-Werkzeug 1.0 will disable the magical import hook completely.
+从 0.7 开始我们不推荐短入口，强烈鼓励从一个实际实现的模块来导入。Werkzeug 1.0 将完
+全不支持这种神奇的导入钩子。
 
-Because finding out where the actual functions are imported and rewriting
-them by hand is a painful and boring process we wrote a tool that aids in
-making this transition.
+因为手动去发现那么实际的函数被导入并重写他们是一个痛苦和乏味的过程，所以我们写
+了一个工具来帮助过渡。
 
-Automatically Rewriting Imports
+自动重写入口
 -------------------------------
 
-For instance, with Werkzeug < 0.7 the recommended way to use the escape function
-was this::
+举个例子， Werkzeug < 0.7 版本推荐的方法是使用 `escape`  函数，用法如下::
 
     from werkzeug import escape
 
-With Werkzeug 0.7, the recommended way to import this function is
-directly from the utils module (and with 1.0 this will become mandatory).
-To automatically rewrite all imports one can use the
-`werkzeug-import-rewrite <http://bit.ly/import-rewrite>`_ script.
+Werkzeug 0.7 版本推荐的方法是直接从工具包导入 `escape`  函数(1.0 版本这个方
+法将会变成强制性的)。为了自动重写所有的入口你可以使用 `werkzeug-import-rewri
+te <http://bit.ly/import-rewrite>`_ script。
 
-You can use it by executing it with Python and with a list of folders with
-Werkzeug based code.  It will then spit out a hg/git compatible patch
-file.  Example patch file creation::
+你可以通过 Python 和 Werkzeug 基础代码的文件夹列表来执行它。它将会输出一个 hg/git 
+兼容的补丁文件。如下::
 
     $ python werkzeug-import-rewrite.py . > new-imports.udiff
 
-To apply the patch one of the following methods work:
+通过下列方法应用补丁文件:
 
 hg:
 
@@ -54,20 +47,17 @@ patch:
 
         patch -p1 < new-imports.udiff
 
-Stop Using Deprecated Things
+停止使用废弃的东西
 ----------------------------
 
-A few things in Werkzeug will stop being supported and for others, we're
-suggesting alternatives even if they will stick around for a longer time.
+Werkzeug 上的一些东西将停止更新，我们强烈建议替换掉即使他们短时间内还可以使用。
 
-Do not use:
+不要使用:
 
--   `werkzeug.script`, replace it with custom scripts written with
-    `argparse` or something similar.
--   `werkzeug.template`, replace with a proper template engine.
--   `werkzeug.contrib.jsrouting`, stop using URL generation for
-    JavaScript, it does not scale well with many public routing.
--   `werkzeug.contrib.kickstart`, replace with hand written code, the
-    Werkzeug API became better in general that this is no longer
-    necessary.
--   `werkzeug.contrib.testtools`, not useful really.
+-   `werkzeug.script` ，用 `argparse` 或其他相似的工具定制脚本替换它。
+-   `werkzeug.template`, 用一个适当的模板引擎替换它。
+-   `werkzeug.contrib.jsrouting` ，停止使用Javascript URL 生成器，它与许多公共公
+    共路由的扩展性不是很好。
+-   `werkzeug.contrib.kickstart` ，取代手写代码，实际上 Werkzeug API 变得越来越
+    好，他不再是必需的。
+-   `werkzeug.contrib.testtools` ，已经不是那么有用了。
