@@ -20,13 +20,13 @@ Werkzeug 教程
     sudo apt-get install redis
 
 Redis 为 UNIX 系统开发，并没有考虑为 Windows 设计。对于开发来说，非官方的版本已
-经足够了，你可以从 `github<https://github.com/dmajkic/redis/downloads>`_ 得到它。
+经足够了，你可以从 `github <https://github.com/dmajkic/redis/downloads>`_ 得到它。
 
 简短介绍
 -------------------
 
 在这个教程中，我们将一起用 Werkzeug 创建一个短网址服务。请注意，Werkzeug 并不是
-一个框架，它是一个带着一些工具集的库，你可以通过它来创建你自己的框架或 Web 应用，
+一个框架，它是一个带着一些工具集的库，你可以通过它来创建你自己的框架或 Web 应用
 。Werkzeug 是非常灵活的，这篇教程用到的一些方法只是 Werkzeug 的一部分。
 
 在数据层，为了保持简单，我们使用 `redis`_ 来代替关系型数据库，而且 `redis`_ 也擅
@@ -41,41 +41,35 @@ Redis 为 UNIX 系统开发，并没有考虑为 Windows 设计。对于开发�
 .. _Jinja: http://jinja.pocoo.org/
 .. _redis: http://redis.io/
 
-Step 0: 一个基础的 WSGI 介绍
+Step 0: WSGI 基础介绍
 ---------------------------------
 
-Werkzeug is a utility library for WSGI.  WSGI itself is a protocol or
-convention that ensures that your web application can speak with the
-webserver and more importantly that web applications work nicely together.
+Werkzeug 是一个 WSGI 工具包。WSGI 是一个 Web 应用和服务器通信的协议，Web 应用
+可以通过 WSGI 一起工作。
 
-A basic “Hello World” application in WSGI without the help of Werkzeug
-looks like this::
+一个基本的 “Hello World” WSGI 应用看起来是这样的::
 
     def application(environ, start_response):
         start_response('200 OK', [('Content-Type', 'text/plain')])
         return ['Hello World!']
 
-A WSGI application is something you can call and pass an environ dict
-and a ``start_response`` callable.  The environ contains all incoming
-information, the ``start_response`` function can be used to indicate the
-start of the response.  With Werkzeug you don't have to deal directly with
-either as request and response objects are provided to work with them.
+用过 WSGI 应用可以和环境通信，他有一个可调用的 ``start_response`` 。环境包含了
+所有进来的信息。 ``start_response`` 用来表明已经收到一个响应。通过 Werkzeug 你
+可以不必直接处理请求或者响应这些底层的东西，它已经封装好了这些。
 
-The request data takes the environ object and allows you to access the
-data from that environ in a nice manner.  The response object is a WSGI
-application in itself and provides a much nicer way to create responses.
+请求数据需要环境对象，他允许你以一个轻松的方式访问数据。响应对象是一个 WSGI 应
+用，提供了更好的方法来创建响应。
 
-Here is how you would write that application with response objects::
+下面教你怎么用响应对象来写一个应用::
 
     from werkzeug.wrappers import Response
-
-    def application(environ, start_response):
+ 
+     def application(environ, start_response):
         response = Response('Hello World!', mimetype='text/plain')
         return response(environ, start_response)
 
-And here an expanded version that looks at the query string in the URL
-(more importantly at the `name` parameter in the URL to substitute “World”
-against another word)::
+这里有一个好象是在 URL 中查询字符串的扩展版本(重点是 URL 中的 `name` 将会替代 
+``World``)::
 
     from werkzeug.wrappers import Request, Response
 
@@ -85,33 +79,28 @@ against another word)::
         response = Response(text, mimetype='text/plain')
         return response(environ, start_response)
 
-And that's all you need to know about WSGI.
+到此为止，你已经足够了解 WSGI 了。
 
 
-Step 1: Creating the Folders
+Step 1: 创建目录 
 ----------------------------
 
-Before we get started, let’s create the folders needed for this application::
+在开始之前，首先为应用创建一个目录::
 
     /shortly
         /static
         /templates
 
-The shortly folder is not a python package, but just something where we
-drop our files.  Directly into this folder we will then put our main
-module in the following steps. The files inside the static folder are
-available to users of the application via HTTP.  This is the place where
-CSS and JavaScript files go. Inside the templates folder we will make
-Jinja2 look for templates.  The templates you create later in the tutorial
-will go in this directory.
+这个简洁的目录不是一个python包，他用来存放我们的项目文件。我们的入口模块将会放在 ``/shortly``
+目录的根目录下。 ``/static`` 目录用来放置CSS、Javascript等静态文件，用户可以通过
+HTTP协议直接访问。 ``/templates`` 目录用来存放 Jinja2 模板文件，接下来你为项目创
+建的模板文件将要放到这个文件夹内。
 
-Step 2: The Base Structure
+Step 2: 基本结构
 --------------------------
 
-Now let's get right into it and create a module for our application.  Let's
-create a file called `shortly.py` in the `shortly` folder.  At first we
-will need a bunch of imports.  I will pull in all the imports here, even
-if they are not used right away, to keep it from being confusing::
+现在我们正式开始为我们的项目创建模块。在 `shortly` 目录创建 `shortly.py` 文件。首先
+来导入一些东西。为了防止混淆，我把所有的入口放在这，即使他们不会立即使用::
 
     import os
     import redis
@@ -123,11 +112,10 @@ if they are not used right away, to keep it from being confusing::
     from werkzeug.utils import redirect
     from jinja2 import Environment, FileSystemLoader
 
-Then we can create the basic structure for our application and a function
-to create a new instance of it, optionally with a piece of WSGI middleware
-that exports all the files on the `static` folder on the web::
-
-    class Shortly(object):
+接下来我们来为我们的应用创建基本的结构，并通过一个函数来创建应用实例，通过 WSGI 
+中间件输出 `static` 目录的文件::
+ 
+     class Shortly(object):
 
         def __init__(self, config):
             self.redis = redis.Redis(config['redis_host'], config['redis_port'])
@@ -138,10 +126,10 @@ that exports all the files on the `static` folder on the web::
         def wsgi_app(self, environ, start_response):
             request = Request(environ)
             response = self.dispatch_request(request)
-            return response(environ, start_response)
+            return response(environ, start_response) 
 
         def __call__(self, environ, start_response):
-            return self.wsgi_app(environ, start_response)
+            return self. wsgi_app(environ, start_response)
 
 
     def create_app(redis_host='localhost', redis_port=6379, with_static=True):
@@ -155,47 +143,37 @@ that exports all the files on the `static` folder on the web::
             })
         return app
 
-Lastly we can add a piece of code that will start a local development
-server with automatic code reloading and a debugger::
+最后我们添加一部分代码来开启一个本地服务器，自动加载代码并开启调试器::
 
     if __name__ == '__main__':
         from werkzeug.serving import run_simple
         app = create_app()
         run_simple('127.0.0.1', 5000, app, use_debugger=True, use_reloader=True)
 
-The basic idea here is that our ``Shortly`` class is an actual WSGI
-application.  The ``__call__`` method directly dispatches to ``wsgi_app``.
-This is done so that we can wrap ``wsgi_app`` to apply middlewares like we
-do in the ``create_app`` function.  The actual ``wsgi_app`` method then
-creates a :class:`Request` object and calls the ``dispatch_request``
-method which then has to return a :class:`Response` object which is then
-evaluated as WSGI application again.  As you can see: turtles all the way
-down.  Both the ``Shortly`` class we create, as well as any request object
-in Werkzeug implements the WSGI interface.  As a result of that you could
-even return another WSGI application from the ``dispatch_request`` method.
+思路很简单，我们的 ``Shortly`` 是一个实际的 WSGI 应用。 ``__call__`` 方法直接调
+用 ``wsgi_app`` 。这样做我们可以装饰 ``wsgi_app`` 调用中间件，就像我们在 ``create_app``
+函数中做的一样。 ``wsgi_app`` 实际上创建了一个 :class:`Request` 对象,之后通过 
+``dispatch_request`` 调用 :class:`Request` 对象然后给 WSGI 应用返回一个 `Response`
+对象。正如你看到的：无论是创建 ``Shortly`` 类，还是还是创建 Werkzeug Request 对
+象来执行 WSGI 接口。最终结果只是从 ``dispatch_request`` 方法返回另一个 WSGI 应用。
 
-The ``create_app`` factory function can be used to create a new instance
-of our application.  Not only will it pass some parameters as
-configuration to the application but also optionally add a WSGI middleware
-that exports static files.  This way we have access to the files from the
-static folder even when we are not configuring our server to provide them
-which is very helpful for development.
+``create_app`` 可以被用于创建一个新的应用实例。他不仅可以通过参数配置应用，还可
+以选择性的添加中间件来输出静态文件。通过这种方法我们甚至可以不配置服务器就能访问
+静态文件，这对开发是很有帮助的。
 
-Intermezzo: Running the Application
+插曲: 运行应用程序
 -----------------------------------
 
-Now you should be able to execute the file with `python` and see a server
-on your local machine::
+现在你应该可以通过 `python` 执行这个文件了，看看你本机的服务::
 
     $ python shortly.py 
      * Running on http://127.0.0.1:5000/
      * Restarting with reloader: stat() polling
 
-It also tells you that the reloader is active.  It will use various
-techniques to figure out if any file changed on the disk and then
-automatically restart.
+它告诉你自动加载已经开启，他会通过各种各样的技术来判断硬盘上的文件是否改变来自动
+重启。
 
-Just go to the URL and you should see “Hello World!”.
+在浏览器输入这个URL，你将会看到 “Hello World!”。
 
 Step 3: The Environment
 -----------------------
