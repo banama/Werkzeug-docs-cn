@@ -14,14 +14,15 @@ def is_valid_url(url):
     return parts.scheme in ('http', 'https')
 
 def base36_encode(number):
-    assert number >= 0
+    assert number >= 0, 'positive integer required'
     if number == 0:
         return '0'
-        base36 = []
+    base36 = []
     while number != 0:
         number, i = divmod(number, 36)
         base36.append('0123456789abcdefghijklmnopqrstuvwxyz'[i])
-        return ''.join(reversed(base36))
+    return ''.join(reversed(base36))
+
 
 class Shortly(object):
 
@@ -67,6 +68,24 @@ class Shortly(object):
                 short_id = self.insert_url(url)
                 return redirect('/%s+' % short_id)
         return self.render_template('new_url.html', error=error, url=url)
+
+    def on_follow_short_link(self, request, short_id):
+        link_target = self.redis.get('url-target:' + short_id)
+        if link_target is None:
+            raise NotFound()
+        self.redis.incr('click-count:' + short_id)
+        return redirect(link_target)
+   
+    def on_short_link_details(self, request, short_id):
+        link_target = self.redis.get('url-target:' + short_id)
+        if link_target is None:
+            raise NotFound()
+        click_count = int(self.redis.get('click-count:' + short_id) or 0)
+        return self.render_template('short_link_details.html',
+            link_target=link_target,
+            short_id=short_id,
+            click_count=click_count
+        )
 
     def insert_url(self, url):
         short_id = self.redis.get('reverse-url:' + url)
