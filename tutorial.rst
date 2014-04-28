@@ -239,10 +239,10 @@ URL 的字符串。此外我们还可以使用它来翻转 URL，但这不是这
 如果一切顺利，我们用 request 作为参数,所有的 URL 参数做作为关键字参数调用 ``on_``
 + endpoint 函数可以返回响应对象。
 
-Step 5: The First View
+Step 5: 第一个视图
 ----------------------
 
-Let's start with the first view: the one for new URLs::
+让我们开始第一个视图: new URLs 视图::
 
     def on_new_url(self, request):
         error = None
@@ -256,17 +256,15 @@ Let's start with the first view: the one for new URLs::
                 return redirect('/%s+' % short_id)
         return self.render_template('new_url.html', error=error, url=url)
 
-This logic should be easy to understand.  Basically we are checking that
-the request method is POST, in which case we validate the URL and add a
-new entry to the database, then redirect to the detail page.  This means
-we need to write a function and a helper method.  For URL validation this
-is good enough::
+思想不难理解。首先我们检查请求方法是不是 POST，然后验证得到的 URL 并插入到数据库
+中，然后跳转到一个详细页面。要实现这个，意味着我们需要在写一个函数和一个辅助方法
+下面是 URL 验证函数::
 
     def is_valid_url(url):
         parts = urlparse.urlparse(url)
         return parts.scheme in ('http', 'https')
 
-For inserting the URL, all we need is this little method on our class::
+为了向数据库插入 URL，我们只需要在类中添加以下方法::
 
     def insert_url(self, url):
         short_id = self.redis.get('reverse-url:' + url)
@@ -278,11 +276,9 @@ For inserting the URL, all we need is this little method on our class::
         self.redis.set('reverse-url:' + url, short_id)
         return short_id
 
-``reverse-url:`` + the URL will store the short id.  If the URL was
-already submitted this won't be None and we can just return that value
-which will be the short ID.  Otherwise we increment the ``last-url-id``
-key and convert it to base36.  Then we store the link and the reverse
-entry in redis.  And here the function to convert to base 36::
+``reverse-url:`` + URL 将会存放储存ID。如果 URL 已经被提交过那么只需要返回存储ID
+值，否则我们增加 ``last-url-id`` 键值并转化为 base36，接下来我们将存储连接和转换
+连接存储到 redis。下面就是转化为 base 36 的函数::
 
     def base36_encode(number):
         assert number >= 0, 'positive integer required'
@@ -294,36 +290,30 @@ entry in redis.  And here the function to convert to base 36::
             base36.append('0123456789abcdefghijklmnopqrstuvwxyz'[i])
         return ''.join(reversed(base36))
 
-So what is missing for this view to work is the template.  We will create
-this later, let's first also write the other views and then do the
-templates in one go.
+然而我们还没有视图的模板，不急，我们过一会就来写模板。不过在这之前，我们先来完成
+另一个视图。
 
-Step 6: Redirect View
+Step 6: 重定向视图
 ---------------------
 
-The redirect view is easy.  All it has to do is to look for the link in
-redis and redirect to it.  Additionally we will also increment a counter
-so that we know how often a link was clicked::
+重定向视图很简单，它只需要从 redis 找到连接并重定向跳转到它。另外我们还想添加一个
+计数器以便于统计连接被点击频率::
 
     def on_follow_short_link(self, request, short_id):
         link_target = self.redis.get('url-target:' + short_id)
         if link_target is None:
             raise NotFound()
         self.redis.incr('click-count:' + short_id)
-        return redirect(link_target)
+        return redirect(link_ta rget)
 
-In this case we will raise a :exc:`~werkzeug.exceptions.NotFound` exception
-by hand if the URL does not exist, which will bubble up to the
-``dispatch_request`` function and be converted into a default 404
-response.
+在这种情况下，如果 URL 不存在，我们将会抛出一个 :exc:`~werkzeug.exceptions.NotFound`
+异常，通过 ``dispatch_request`` 函数返回一个 404 响应
 
-Step 7: Detail View
+Step 7: 描述视图
 -------------------
 
-The link detail view is very similar, we just render a template
-again.  In addition to looking up the target, we also ask redis for the
-number of times the link was clicked and let it default to zero if such
-a key does not yet exist::
+链接描述视图也是非常相似的，我们仅仅需要再渲染一个模板。除了目标 URL，我们还需要
+从 redis 查询被点击次数，如果在 redis 中没有记录，我们把它设为 0::
 
     def on_short_link_details(self, request, short_id):
         link_target = self.redis.get('url-target:' + short_id)
@@ -336,18 +326,15 @@ a key does not yet exist::
             click_count=click_count
         )
 
-Please be aware that redis always works with strings, so you have to convert
-the click count to :class:`int` by hand.
+你要知道 redis 存的字符串，所以你需要手动点击次数转化为 :`int` 。
 
-Step 8: Templates
+Step 8: 模板
 -----------------
 
-And here are all the templates.  Just drop them into the `templates`
-folder.  Jinja2 supports template inheritance, so the first thing we will
-do is create a layout template with blocks that act as placeholders.  We
-also set up Jinja2 so that it automatically escapes strings with HTML
-rules, so we don't have to spend time on that ourselves.  This prevents
-XSS attacks and rendering errors.
+这里就是全部的模板，仅仅把它们放到 `templates` 文件夹就可以了。jinja2支持模板继
+承，所以我们首先要创建一个 layout 模板，并用 blocks 占位。接下来设置jinja2以便于
+自动用html规则转化字符串，我们不必自己花时间来做这些。同时它可以也防止 XSS 攻击和
+渲染错误页面。
 
 *layout.html*:
 
@@ -396,11 +383,10 @@ XSS attacks and rendering errors.
       </dl>
     {% endblock %}
 
-Step 9: The Style
+Step 9: 样式
 -----------------
 
-For this to look better than ugly black and white, here a simple
-stylesheet that goes along:
+添加样式可以使页面比丑陋的黑色和白色看起来好一些。下面是一个简单的样式表:
 
 .. sourcecode:: css
 
@@ -425,8 +411,7 @@ stylesheet that goes along:
 Bonus: Refinements
 ------------------
 
-Look at the implementation in the example dictionary in the Werkzeug
-repository to see a version of this tutorial with some small refinements
-such as a custom 404 page.
+查看 Werkzeug 仓库的 example 目录找到这篇教程代码，那里的版本可能有一些改进，
+比如一个定制的 404 页面等。
 
 -   `shortly in the example folder <https://github.com/mitsuhiko/werkzeug/blob/master/examples/shortly>`_
