@@ -6,13 +6,13 @@ Werkzeug 教程
 .. module:: exceptions
 
 欢迎来到 Werkzeug 教程，我们将会实现一个类似 `TinyURL`_ 的网站来储存 URLS。我们
-将会使用的库有模板引擎 `Jinja`_ 2，数据层支持 `redis`_ ，当然还有 WSGI 协议层Werkzeug。
+将会使用的库有模板引擎 `Jinja`_ 2，数据层支持 `redis`_ ，当然还有 WSGI 协议层 Werkzeug。
 
 你可以使用 `pip` 来安装依赖库::
 
     pip install Jinja2 redis
 
-同时确定你的本地有一个 redis 服务，如果你是OS X系统，你可以使用 `brew` 来安装它::
+同时确定你的本地开启一个 redis 服务，如果你是OS X系统，你可以使用 `brew` 来安装 redis::
 
     brew install redis
 
@@ -20,15 +20,15 @@ Werkzeug 教程
 
     sudo apt-get install redis
 
-Redis 为 UNIX 系统开发，并没有考虑为 Windows 设计。对于开发来说，非官方的版本已
+Redis 专为 UNIX 系统开发，并没有考虑为 Windows 设计。但对于开发来说，非官方的版本已
 经足够了，你可以从 `github <https://github.com/dmajkic/redis/downloads>`_ 得到它。
 
 简短介绍
 -------------------
 
 在这个教程中，我们将一起用 Werkzeug 创建一个短网址服务。请注意，Werkzeug 并不是
-一个框架，它是一个带着一些工具集的库，你可以通过它来创建你自己的框架或 Web 应用
-。Werkzeug 是非常灵活的，这篇教程用到的一些方法只是 Werkzeug 的一部分。
+一个框架，它是一个 WSGI 工具集的库，你可以通过它来创建你自己的框架或 Web 应用。
+Werkzeug 是非常灵活的，这篇教程用到的一些方法只是 Werkzeug 的一部分。
 
 在数据层，为了保持简单，我们使用 `redis`_ 来代替关系型数据库，而且 `redis`_ 也擅
 长来做这些。
@@ -52,14 +52,14 @@ Werkzeug 是一个 WSGI 工具包。WSGI 是一个 Web 应用和服务器通信�
 
     def application(environ, start_response):
         start_response('200 OK', [('Content-Type', 'text/plain')])
-        return ['Hello World!']
+        return ['Hello World!'] 
 
 用过 WSGI 应用可以和环境通信，他有一个可调用的 ``start_response`` 。环境包含了
 所有进来的信息。 ``start_response`` 用来表明已经收到一个响应。通过 Werkzeug 你
-可以不必直接处理请求或者响应这些底层的东西，它已经封装好了这些。
+可以不必直接处理请求或者响应这些底层的东西，它已经为你封装好了这些。
 
-请求数据需要环境对象，他允许你以一个轻松的方式访问数据。响应对象是一个 WSGI 应
-用，提供了更好的方法来创建响应。
+请求数据需要环境对象，Werkzeug 允许你以一个轻松的方式访问数据。响应对象是一个 WSGI
+应用，提供了更好的方法来创建响应。
 
 下面教你怎么用响应对象来写一个应用::
 
@@ -69,12 +69,12 @@ Werkzeug 是一个 WSGI 工具包。WSGI 是一个 Web 应用和服务器通信�
         response = Response('Hello World!', mimetype='text/plain')
         return response(environ, start_response)
 
-这里有一个好象是在 URL 中查询字符串的扩展版本(重点是 URL 中的 `name` 将会替代 
+这里有一个在 URL 中查询字符串的扩展版本(重点是 URL 中的 `name` 将会替代 
 ``World``)::
 
     from werkzeug.wrappers import Request, Response
 
-    def application(environ, start_response):
+    def applicatio n(environ, start_response):
         request = Request(environ)
         text = 'Hello %s!' % request.args.get('name', 'World')
         response = Response(text, mimetype='text/plain')
@@ -326,7 +326,7 @@ Step 7: 描述视图
             click_count=click_count
         )
 
-你要知道 redis 存的字符串，所以你需要手动点击次数转化为 :`int` 。
+要知道 redis 存的是字符串，所以你需要手动点击次数转化为 :`int` 。
 
 Step 8: 模板
 -----------------
@@ -408,10 +408,10 @@ Step 9: 样式
                   font-size: 0.9em; border-radius: 2px; }
     .urlinput   { width: 300px; }
 
-Bonus: Refinements
+Bonus: 改进 
 ------------------
 
-查看 Werkzeug 仓库的 example 目录找到这篇教程代码，那里的版本可能有一些改进，
-比如一个定制的 404 页面等。
+查看 Werkzeug 仓库的 example 目录可以找到这篇教程代码，那里的版本可能有一些改进，
+比如一个定制的 404 页面。
 
 -   `shortly in the example folder <https://github.com/mitsuhiko/werkzeug/blob/master/examples/shortly>`_
