@@ -2,7 +2,8 @@
 Werkzeug 教程
 =================
 
-.. module:: werkzeug
+.. module:: routing
+.. module:: exceptions
 
 欢迎来到 Werkzeug 教程，我们将会实现一个类似 `TinyURL`_ 的网站来储存 URLS。我们
 将会使用的库有模板引擎 `Jinja`_ 2，数据层支持 `redis`_ ，当然还有 WSGI 协议层Werkzeug。
@@ -175,13 +176,11 @@ Step 2: 基本结构
 
 在浏览器输入这个URL，你将会看到 “Hello World!”。
 
-Step 3: The Environment
+Step 3: 环境
 -----------------------
 
-Now that we have the basic application class, we can make the constructor
-do something useful and provide a few helpers on there that can come in
-handy.  We will need to be able to render templates and connect to redis,
-so let's extend the class a bit::
+现在我们已经有了一个应用的基本类，可以通过构造函数来实现一些功能。通过构造函数我
+们可以渲染模板、连接redis。现在让我们扩展这个类::
 
     def __init__(self, config):
         self.redis = redis.Redis(config['redis_host'], config['redis_port'])
@@ -193,20 +192,15 @@ so let's extend the class a bit::
         t = self.jinja_env.get_template(template_name)
         return Response(t.render(context), mimetype='text/html')
 
-Step 4: The Routing
+Step 4: 路由
 -------------------
 
-Next up is routing.  Routing is the process of matching and parsing the URL to
-something we can use.  Werkzeug provides a flexible integrated routing
-system which we can use for that.  The way it works is that you create a
-:class:`~werkzeug.routing.Map` instance and add a bunch of
-:class:`~werkzeug.routing.Rule` objects.  Each rule has a pattern it will
-try to match the URL against and an “endpoint”.  The endpoint is typically
-a string and can be used to uniquely identify the URL.  We could also use
-this to automatically reverse the URL, but that's not what we will do in this
-tutorial.
+下一步是路由。我们可以通过路由来匹配和解析URL。Werkzeug 提供了一个灵活的集成路由。
+你需要创建一个 :class:`~werkzeug.routing.Map` 实例并添加一系列 :class:`~werkzeug.routing.Rule` 
+对象。每个 rule 将会匹配 URL 并添加一个 “endpoint”。endpoint 通常是一个用于标记 
+URL 的字符串。此外我们还可以使用它来翻转 URL，但这不是这篇教程我们要做的。
 
-Just put this into the constructor::
+把下列代码放入构造函数::
 
     self.url_map = Map([
         Rule('/', endpoint='new_url'),
@@ -214,17 +208,15 @@ Just put this into the constructor::
         Rule('/<short_id>+', endpoint='short_link_details')
     ])
 
-Here we create a URL map with three rules.  ``/`` for the root of the URL
-space where we will just dispatch to a function that implements the logic
-to create a new URL.  And then one that follows the short link to the
-target URL and another one with the same rule but a plus (``+``) at the
-end to show the link details.
+现在我们创造了一个包含三个 URL 规则的字典。第一个规则， ``/`` 是根 URL 空间，我
+们可以调用一个逻辑函数来创建一个新 URL；第二个规则，根据规则指向一个目标URL；最
+后一个规则，和第二个有相同的规则，但是它在最后添加一个(``+``)来显示链接链接详细
+信息。
 
-So how do we find our way from the endpoint to a function?  That's up to you.
-The way we will do it in this tutorial is by calling the method ``on_``
-+ endpoint on the class itself.  Here is how this works::
+那么 endpoint 是怎么指向一个函数的？这是需要你解决的。本篇教程中是通过类中 ``on_``
++ endpoint 方法。具体如下::
 
-    def dispatch_request(self, request):
+     def dispatch_request(self, request):
         adapter = self.url_map.bind_to_environ(request.environ)
         try:
             endpoint, values = adapter.match()
@@ -232,25 +224,20 @@ The way we will do it in this tutorial is by calling the method ``on_``
         except HTTPException, e:
             return e
 
-We bind the URL map to the current environment and get back a
-:class:`~werkzeug.routing.URLAdapter`.  The adapter can be used to match
-the request but also to reverse URLs.  The match method will return the
-endpoint and a dictionary of values in the URL.  For instance the rule for
-``follow_short_link`` has a variable part called ``short_id``.  When we go
-to ``http://localhost:5000/foo`` we will get the following values back::
+我们将 RUL 绑定到目前的环境返回一个 :class:`~werkzeug.routing.URLAdapter` 。适配器
+可以用于匹配请求也可以翻转 URLS。匹配方法将会返回 endpoint 和一个 URL 值字典。这个
+``follow_short_link`` 路由实例有一个变量 ``short_id`` 。当我们在浏览器输入 ``http://localhost:5000/foo``
+我们将会得到如下的值::
 
     endpoint = 'follow_short_link'
     values = {'short_id': u'foo'}
 
-If it does not match anything, it will raise a
-:exc:`~werkzeug.exceptions.NotFound` exception, which is an
-:exc:`~werkzeug.exceptions.HTTPException`.  All HTTP exceptions are also
-WSGI applications by themselves which render a default error page.  So we
-just catch all of them down and return the error itself.
+我们没有匹配到任何东西，他将会抛出一个 :exc:`~werkzeug.exceptions.NotFound` 异常，
+实质是一个 :exc:`~werkzeug.exceptions.HTTPException` 异常。所有的 HTTP 异常将会跳
+转 WSGI 应用渲染的默认错误页面。所以我们只需要捕获并返回他们。
 
-If all works well, we call the function ``on_`` + endpoint and pass it the
-request as argument as well as all the URL arguments as keyword arguments
-and return the response object that method returns.
+如果一切顺利，我们用 request 作为参数,所有的 URL 参数做作为关键字参数调用 ``on_``
++ endpoint 函数可以返回响应对象。
 
 Step 5: The First View
 ----------------------
