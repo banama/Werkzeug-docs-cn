@@ -190,7 +190,7 @@ datetime.datetime(2009, 2, 20, 10, 10, 25)
 True
 
 
-响应
+Response
 =========
 
 Response 对象和请求对象相对。他常用于向客户端发送响应数据。实际上，在 WSGI 应用
