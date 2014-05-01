@@ -4,37 +4,30 @@
 Python 3 Notes
 ==============
 
-This part of the documentation outlines special information required to
-use Werkzeug and WSGI on Python 3.
+这部分文档特别要求使用 Werkzeug 和 WSGI 的环境为 Python 3。
 
 .. warning::
 
-   Python 3 support in Werkzeug is currently highly experimental.  Please
-   give feedback on it and help us improve it.
+   Werkzeug 的 Python 3 支持目前只是实验性的。所以有问题欢迎反馈以帮助我们来
+   改善它。
 
 
-WSGI Environment
+WSGI 环境
 ================
 
-The WSGI environment on Python 3 works slightly different than it does on
-Python 2.  For the most part Werkzeug hides the differences from you if
-you work on the higher level APIs.  The main difference between Python 2
-and Python 3 is that on Python 2 the WSGI environment contains bytes
-whereas the environment on Python 3 contains a range of differently
-encoded strings.
+Python 3 的 WSGI 环境和 Python 2 有一点不同。如果你使用高级的 API，Werkzeug
+会帮你隐藏这些区别的大部分。Python 2 和 Pyhton 3 最主要的区别是 Python 2 的
+WSGI 环境包含字节，而 Python 3 包含一系列不同的编码字符串。
 
-There are two different kinds of strings in the WSGI environ on Python 3:
+在 Python 3 有两种不同类型的 WSGI 环境:
 
--   unicode strings restricted to latin1 values.  These are the used for
-    HTTP headers and a few other things.
--   unicode strings carrying binary payload, roundtripped through latin1
-    values.  This is usually referred as “WSGI encoding dance” throughout
-    Werkzeug.
+-   unicode 字符串限制到 latin1 值。他们经常用于 HTTP headers 信息和其他一些
+    地方。
+-   unicode 字符串携带二进制数据，通过 latin1 值来回传递。这在 Werkzeug 通常
+    被成为 “WSGI encoding dance” 。
 
-Werkzeug provides you with functionality to deal with these automatically
-so that you don't need to be aware of the inner workings.  The following
-functions and classes should be used to read information out of the
-WSGI environment:
+Werkzeug 给你提供一些函数自动解决这些问题。所以你不需要关心内部的实现。下面 
+的函数和类可以用来读取 WSGI 环境信息:
 
 -   :func:`~werkzeug.wsgi.get_current_url`
 -   :func:`~werkzeug.wsgi.get_host`
@@ -43,28 +36,20 @@ WSGI environment:
 -   :func:`~werkzeug.wsgi.get_query_string`
 -   :func:`~werkzeug.datastructures.EnvironHeaders`
 
-Applications are strongly discouraged to create and modify a WSGI
-environment themselves on Python 3 unless they take care of the proper
-decoding step.  All high level interfaces in Werkzeug will apply the
-correct encoding and decoding steps as necessary.
+不推荐在 Python 3 中创造和修改 WSGI 环境除非确保能够正确解码。在 Werkzeug 中
+所有高级 API 接口能正确实现编码和解码。
 
 URLs
 ====
 
-URLs in Werkzeug attempt to represent themselves as unicode strings on
-Python 3.  All the parsing functions generally also provide functionality
-that allow operations on bytes.  In some cases functions that deal with
-URLs allow passing in `None` as charset to change the return value to byte
-objects.  Internally Werkzeug will now unify URIs and IRIs as much as
-possible.
+在 Python 3 中 Werkzeug 的 URL 为 unicode 字符串。所有的解析函数一般会提供操
+作字节码功能。在某些情况，URLs 处理函数允许字符集不改变返回一个字节对象。在
+内部 Werkzeug 正尽可能统一 URIs 和 IRIs。
 
-Request Cleanup
+清理 Request
 ===============
 
-Request objects on Python 3 and PyPy require explicit closing when file
-uploads are involved.  This is required to properly close temporary file
-objects created by the multipart parser.  For that purpose the ``close()``
-method was introduced.
+Python 3 和 PyPy 在上传文件时，需要确保关闭 Request 对象。这要妥善关闭由多重
+解析创建的临时文件。你可以使用 ``close()`` 方法。
 
-In addition to that request objects now also act as context managers that
-automatically close.
+除了请求对象还有上下文管理需要关闭，但是上下文管理可以自动关闭。
