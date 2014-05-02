@@ -1,16 +1,14 @@
 =========================
-Serving WSGI Applications
+在服务器运行 WSGI 应用
 =========================
 
-.. module:: werkzeug.serving
+.. module:: serving
 
-There are many ways to serve a WSGI application.  While you're developing it,
-you usually don't want to have a full-blown webserver like Apache up and
-running, but instead a simple standalone one.  Because of that Werkzeug comes
-with a builtin development server.
+这里有一些在服务器运行 WSGI 应用的方式。当你正在开发一个应用，你往往不想在一个成
+熟服务器上部署和运行，取而代之的是一个轻量服务器。 Werkzeug 就内置了这样一个轻量
+的服务器。
 
-The easiest way is creating a small ``start-myproject.py`` file that runs the
-application using the builtin server::
+在一个服务器上运行 ``start-myproject.py`` 最简单的方法如下示例::
 
     #!/usr/bin/env python
     # -*- coding: utf-8 -*-
@@ -21,8 +19,8 @@ application using the builtin server::
     app = make_app(...)
     run_simple('localhost', 8080, app, use_reloader=True)
 
-You can also pass it the `extra_files` keyword argument with a list of
-additional files (like configuration files) you want to observe.
+你可以添加一个 `extra_files` 关键字参数，一个你想要添加的文件(比如配置文件)列表。
+
 
 .. autofunction:: run_simple
 
@@ -30,12 +28,10 @@ additional files (like configuration files) you want to observe.
 
 .. admonition:: Information
 
-   The development server is not intended to be used on production systems.
-   It was designed especially for development purposes and performs poorly
-   under high load.  For deployment setups have a look at the
-   :ref:`deployment` pages.
+   开发服务器不是为了生产环境，它的出现是为了开发方便，在高负载情况下效率是很低
+   的。生产环境部署一个应用请看 :ref:`deployment` 页面。
 
-Virtual Hosts
+虚拟主机
 -------------
 
 Many web applications utilize multiple subdomains.  This can be a bit tricky
