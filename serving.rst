@@ -34,29 +34,25 @@
 虚拟主机
 -------------
 
-Many web applications utilize multiple subdomains.  This can be a bit tricky
-to simulate locally.  Fortunately there is the `hosts file`_ that can be used
-to assign the local computer multiple names.
+一些应用有多个子域名，你需要模拟本地。幸运的是 `hosts file`_ 文件可以给本机分配
+多个名字。
 
-This allows you to call your local computer `yourapplication.local` and
-`api.yourapplication.local` (or anything else) in addition to `localhost`.
+这允许你使用 `yourapplication.local` 和 `api.yourapplication.local` (或者其他)代
+替 `localhost` 访问本机。
 
-You can find the hosts file on the following location:
+你可以从下面的地方找到 hosts 文件:
 
     =============== ==============================================
     Windows         ``%SystemRoot%\system32\drivers\etc\hosts``
     Linux / OS X    ``/etc/hosts``
     =============== ==============================================
 
-You can open the file with your favorite text editor and add a new name after
-`localhost`::
+你可以用你喜欢的文本编辑器打开 hosts 文件，在 `localhost` 后面加上::
 
     127.0.0.1       localhost yourapplication.local api.yourapplication.local
 
-Save the changes and after a while you should be able to access the
-development server on these host names as well.  You can use the
-:ref:`routing` system to dispatch between different hosts or parse
-:attr:`request.host` yourself.
+保存之后你应该就可以通过你添加的主机名字访问开发服务器了。你可以使用
+:ref:`routing` 系统调度"两个"主机或自己解析 :attr:`request.host` 。
 
 Shutting Down The Server
 ------------------------
