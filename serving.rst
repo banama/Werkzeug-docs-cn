@@ -54,51 +54,43 @@
 保存之后你应该就可以通过你添加的主机名字访问开发服务器了。你可以使用
 :ref:`routing` 系统调度"两个"主机或自己解析 :attr:`request.host` 。
 
-Shutting Down The Server
+关闭服务
 ------------------------
 
 .. versionadded:: 0.7
 
-Starting with Werkzeug 0.7 the development server provides a way to shut
-down the server after a request.  This currently only works with Python
-2.6 and later and will only work with the development server.  To initiate
-the shutdown you have to call a function named
-``'werkzeug.server.shutdown'`` in the WSGI environment::
+从 Werkzeug 0.7 版本开始，开发服务器允许在一个请求后关闭服务。目前要求你的Python
+版本在 2.6 以上，同时也只能在开发服务器启用。通过在 WSGI 环境调用
+``'erkzeug.server.shutdown'`` 来开启 shutdown::
 
     def shutdown_server(environ):
         if not 'werkzeug.server.shutdown' in environ:
             raise RuntimeError('Not running the development server')
         environ['werkzeug.server.shutdown']()
 
-Troubleshooting
+故障排除
 ---------------
 
-On operating systems that support ipv6 and have it configured such as modern
-Linux systems, OS X 10.4 or higher as well as Windows Vista some browsers can
-be painfully slow if accessing your local server.  The reason for this is that
-sometimes "localhost" is configured to be available on both ipv4 and ipv6 socktes
-and some browsers will try to access ipv6 first and then ivp4.
+在一些支持并配置 ipv6 的操作系统，比如 Linux, OS X 10.4 或更高 和 Windows Vista
+一些浏览器有时候访问本地服务器很慢，原因有可能是本机被设置为同时支持 ipv4 和
+ipv6 套接字，一些浏览器会首先尝试 ipv6 协议。
 
-At the current time the integrated webserver does not support ipv6 and ipv4 at
-the same time and for better portability ipv4 is the default.
+而目前集成的服务器不能同时支持两种协议。为了更好的可移植性，将会默认支持 ipv4
+协议。
 
-If you notice that the web browser takes ages to load the page there are two ways
-around this issue.  If you don't need ipv6 support you can disable the ipv6 entry
-in the `hosts file`_ by removing this line::
+注意到解决这个问题有两种方法。如果你不需要ipv6 支持，你可以移除 `hosts file`_ 
+文件中的下面一行::
 
     ::1             localhost
 
-Alternatively you can also disable ipv6 support in your browser.  For example
-if Firefox shows this behavior you can disable it by going to ``about:config``
-and disabling the `network.dns.disableIPv6` key.  This however is not
-recommended as of Werkzeug 0.6.1!
+另外你也可以关闭浏览器的 ipv6 支持。比如，在火狐浏览器中你可以进入
+``about:config`` 关闭 `network.dns.disableIPv6` 。然后，在 werkzeug 0.6.1中不推
+荐这种做法。
 
-Starting with Werkzeug 0.6.1, the server will now switch between ipv4 and
-ipv6 based on your operating system's configuration.  This means if that
-you disabled ipv6 support in your browser but your operating system is
-preferring ipv6, you will be unable to connect to your server.  In that
-situation, you can either remove the localhost entry for ``::1`` or
-explicitly bind the hostname to an ipv4 address (`127.0.0.1`)
+从 Werkzeug 0.6.1 开始服务器将不再根据操作系统的配置来转换协议。这意味着如果你的
+浏览器关闭 ipv6 支持，而你的操作系统更倾向于 ipv6，你将连接不上服务器。这种情况
+下，你可以移除本机 hosts 文件的 ``::1`` 或者明确的用一个 ipv4 协议地址
+(`127.0.0.1`)绑定主机名。
 
 .. _hosts file: http://en.wikipedia.org/wiki/Hosts_file
 
