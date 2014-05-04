@@ -1,28 +1,23 @@
 ==============
-Test Utilities
+单元测试s
 ==============
 
 .. module:: werkzeug.test
 
-Quite often you want to unittest your application or just check the output
-from an interactive python session.  In theory that is pretty simple because
-you can fake a WSGI environment and call the application with a dummy
-`start_response` and iterate over the application iterator but there are
-argumentably better ways to interact with an application.
+也许你经常需要对你的的应用进行单元测试或者仅仅检查 Python session 的输出。理论上
+讲这是很简单的，你可以伪造一个环境，通过一个假的 `start_response` 遍历应用，但是
+这里还有一个更好的方法。
 
 
 Diving In
 =========
 
-Werkzeug provides a `Client` object which you can pass a WSGI application (and
-optionally a response wrapper) which you can use to send virtual requests to
-the application.
+Werkzeug 提供了一个 `Client` 对象，可以传入一个 WSGI 应用(可选传入一个 response),
+通过这个你可以向应用发出一个虚拟请求。
 
-A response wrapper is a callable that takes three arguments: the application
-iterator, the status and finally a list of headers.  The default response
-wrapper returns a tuple.  Because response objects have the same signature,
-you can use them as response wrapper, ideally by subclassing them and hooking
-in test functionality.
+用三个参数调用一个 response: 应用迭代器、状态和一个 headers。默认 response 返回
+一个元组。因为 response 对象有相同的签名，所以你可以像使用 response 一样使用他们
+。通过这样一种方式进行测试功能是很理想的。
 
 >>> from werkzeug.test import Client
 >>> from werkzeug.testapp import test_app
@@ -36,7 +31,7 @@ Headers([('Content-Type', 'text/html; charset=utf-8'), ('Content-Length', '8339'
 >>> resp.data.splitlines()[0]
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'
 
-Or without a wrapper defined:
+或默认没有 response:
 
 >>> c = Client(test_app)
 >>> app_iter, status, headers = c.get('/')
