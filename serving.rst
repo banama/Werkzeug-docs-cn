@@ -99,39 +99,36 @@ SSL
 
 .. versionadded:: 0.6
 
-The builtin server supports SSL for testing purposes.  If an SSL context
-is provided it will be used.  That means a server can either run in HTTP
-or HTTPS mode, but not both.  This feature requires the Python OpenSSL
-library.
+内置服务器支持测试目的的 SSL，如果提供一个 SSL上下文，他将会被使用，这意味着服
+务器可以在 HTTP 或 HTTPS 模式下运行，但不可同时在两种模式下运行。这个功能需要
+Python OpenSSL 库。
 
-Quickstart
+快速开始
 ``````````
 
-The easiest way to do SSL based development with Werkzeug is by using it
-to generate an SSL certificate and private key and storing that somewhere
-and to then put it there.  For the certificate you need to provide the
-name of your server on generation or a `CN`.
+在werkzeug开发过程中使用 SSL 最简单的方法就是通过 werkzeug 生成一个 SSL 证书和
+私钥存起来。对于证书你需要提供生成证书的服务器名或一个 `CN`.
 
-1.  Generate an SSL key and store it somewhere:
+1.  生成一个 SSL 密钥并存放在某个地方:
 
     >>> from werkzeug.serving import make_ssl_devcert
     >>> make_ssl_devcert('/path/to/the/key', host='localhost')
     ('/path/to/the/key.crt', '/path/to/the/key.key')
 
-2.  Now this tuple can be passed as ``ssl_context`` to the
-    :func:`run_simple` method:
+2.  现在这个元组会当作 ``ssl_context`` 传入 :func:`run_simple` 方法:
 
     run_simple('localhost', 4000, application,
                ssl_context=('/path/to/the/key.crt',
                             '/path/to/the/key.key'))
 
-You will have to acknowledge the certificate in your browser once then.
+现在当你通过浏览器访问 web 应用的时候将需要验证证书。
 
-Loading Contexts by Hand
+手动加载上下文
 ````````````````````````
 
-Instead of using a tuple as ``ssl_context`` you can also create the
-context programmatically.  This way you have better control over it::
+你也可以通过代码创建一个上下文代替使用 ``ssl_context`` 元组。这个方法是更好控
+制的::
+
 
     from OpenSSL import SSL
     ctx = SSL.Context(SSL.SSLv23_METHOD)
@@ -139,26 +136,23 @@ context programmatically.  This way you have better control over it::
     ctx.use_certificate_file('ssl.cert')
     run_simple('localhost', 4000, application, ssl_context=ctx)
 
-Generating Certificates
+生成证书
 ```````````````````````
 
-A key and certificate can be created in advance using the openssl tool
-instead of the :func:`make_ssl_devcert`.  This requires that you have
-the `openssl` command installed on your system::
+使用 openssl 工具代替 :func:`make_ssl_devcert` 预先创建一个证书。这要求你的系
+统安装 `openssl` 命令行工具::
 
     $ openssl genrsa 1024 > ssl.key
     $ openssl req -new -x509 -nodes -sha1 -days 365 -key ssl.key > ssl.cert
 
-Adhoc Certificates
+Adhoc 证书
 ``````````````````
 
-The easiest way to enable SSL is to start the server in adhoc-mode.  In
-that case Werkzeug will generate an SSL certificate for you::
+开启 SSL 最简单的方法就是用 adhoc 模式运行服务。在这个例子中 Werkzeug 将会为你
+创建一个证书::
 
     run_simple('localhost', 4000, application,
                ssl_context='adhoc')
 
-The downside of this of course is that you will have to acknowledge the
-certificate each time the server is reloaded.  Adhoc certificates are
-discouraged because modern browsers do a bad job at supporting them for
-security reasons.
+当然这种方法也有缺点，那就是每次重载服务你都需要验证证书。不推荐 Adhoc 证书因
+为现在的浏览器因为安全原因对他们支持并不好。
