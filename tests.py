@@ -110,7 +110,7 @@ def stream_encode_multipart(values, use_tempfile=True, threshold=1024 * 500,
     _closure[0].seek(0)
     return _closure[0], length, boundary
 
-
+'''
 def encode_multipart(values, boundary=None, charset='utf-8'):
     """Like `stream_encode_multipart` but returns a tuple in the form
     (``boundary``, ``data``) where data is a bytestring.
@@ -118,7 +118,7 @@ def encode_multipart(values, boundary=None, charset='utf-8'):
     stream, length, boundary = stream_encode_multipart(
         values, use_temp file=False, boundary=boundary, charset=charset)
     return boundary, stream.read()
-
+'''
 
 def File(fd, filename=None, mimetype=None):
     """Backwards compat."""
@@ -223,9 +223,8 @@ class EnvironBuilder(object):
         :attr:`content_length` ，你还要提供一个 :attr:`content_type`。
     -   a `dict`: 如果是一个字典，键将是一个字符串，值是以下对象:
 
-        -   一个 :class:`file`-like 对象。他们会被自动转化成 :class:`FileStorage`
-        对象。
-        -   一个元组。 meth:`~FileMultiDict.add_file` 方法调用元组项目作为参数。
+        -   一个 :class:`file`-like 对象。他们会被自动转化成 :class:`FileStorage` 对象。
+        -   一个元组。 :meth:`~FileMultiDict.add_file` 方法调用元组项目作为参数。
 
     .. versionadded:: 0.6
        `path` 和 `base_url` 现在是 unicode 字符串，它可以使用 :func:`iri_to_uri`
@@ -233,40 +232,34 @@ class EnvironBuilder(object):
 
     :param path: 请求的路径。在 WSGI 环境它等效于 `PATH_INFO`。如果 `query_string`
                 没有被定义，这里有一个问题要注意，`path` 后面的将被当作 `query string`。
-    :param base_url: base URL is a URL that is used to extract the WSGI
-                     URL scheme, host (server name + server port) and the
-                     script root (`SCRIPT_NAME`).
-    :param query_string: an optional string or dict with URL parameters.
-    :param method: the HTTP method to use, defaults to `GET`.
-    :param input_stream: an optional input stream.  Do not specify this and
-                         `data`.  As soon as an input stream is set you can't
-                         modify :attr:`args` and :attr:`files` unless you
-                         set the :attr:`input_stream` to `None` again.
-    :param content_type: The content type for the request.  As of 0.5 you
-                         don't have to provide this when specifying files
-                         and form data via `data`.
-    :param content_length: The content length for the request.  You don't
-                           have to specify this when providing data via
-                           `data`.
-    :param errors_stream: an optional error stream that is used for
-                          `wsgi.errors`.  Defaults to :data:`stderr`.
-    :param multithread: controls `wsgi.multithread`.  Defaults to `False`.
-    :param multiprocess: controls `wsgi.multiprocess`.  Defaults to `False`.
-    :param run_once: controls `wsgi.run_once`.  Defaults to `False`.
-    :param headers: an optional list or :class:`Headers` object of headers.
-    :param data: a string or dict of form data.  See explanation above.
-    :param environ_base: an optional dict of environment defaults.
-    :param environ_overrides: an optional dict of environment overrides.
-    :param charset: the charset used to encode unicode data.
+    :param base_url: base URL 是一个用于提取 WSGI URL ，主机 (服务器名 + 服务端口)
+                    和根脚本的 (`SCRIPT_NAME`) 的 URL。
+    :param query_string: URL 参数可选的字符串和字典。
+    :param method: HTTP 方法，默认为 `GET`。
+    :param input_stream: 一个可选输入流。不要指定它，一旦输入流被设定，你将不能
+                        更改 :attr:`args` 属性和 :attr:`files` 属性除非你将
+                        :attr:`input_stream` 重新设为 `None` 。
+    :param content_type: 请求的内容类型。在0.5 版本当你指定文件和表格数据的时候
+                        不必必须指定他。
+    :param content_length: 请求的内容长度。当通过 `data` 提供数据不必必须指定他。
+    :param errors_stream: 用于 `wsgi.errors` 可选的错误流。默认为 :data:`stderr`。
+    :param multithread: 控制 `wsgi.multithread`。默认为 `False`。
+    :param multiprocess: 控制 `wsgi.multiprocess`。默认为 `False`。
+    :param run_once: 控制 `wsgi.run_once`。默认为 `False`。
+    :param headers: headers 一个可选的列表或者 :class:`Headers` 对象。
+    :param data: 一个字符串或者表单数据字典。看上边的 explanation。
+    :param environ_base: 一个可选的默认环境。
+    :param environ_overrides: 一个可选的覆盖环境。
+    :param charset: 编码 unicode 数据的字符集。
     """
 
-    #: the server protocol to use.  defaults to HTTP/1.1
+    #: 服务器使用协议。默认为 HTTP/1.1
     server_protocol = 'HTTP/1.1'
 
-    #: the wsgi version to use.  defaults to (1, 0)
+    #: 使用的 WSGI 版本。默认为(1, 0)。
     wsgi_version = (1, 0)
 
-    #: the default request class for :meth:`get_request`
+    #: 默认的请求类 :meth:`get_request`。
     request_class = BaseRequest
 
     def __init__(self, path='/', base_url=None, query_string=None,
@@ -327,7 +320,7 @@ class EnvironBuilder(object):
                     else:
                         self.form.setlistdefault(key).append(value)
 
-    def _add_file_from_data(self, key, value):
+    def _add_file_from_data(self,  key, value):
         """Called in the EnvironBuilder to add files from the data dict."""
         if isinstance(value, tuple):
             self.files.add_file(key, *value)
@@ -344,7 +337,7 @@ class EnvironBuilder(object):
         else:
             self.files.add_file(key, value)
 
-    def _get_base_url(self):
+    def _get_base_url(self): 
         return url_unparse((self.url_scheme, self.host,
                             self.script_root, '', '')).rstrip('/') + '/'
 
@@ -363,9 +356,9 @@ class EnvironBuilder(object):
         self.url_scheme = scheme
 
     base_url = property(_get_base_url, _set_base_url, doc='''
-        The base URL is a URL that is used to extract the WSGI
-        URL scheme, host (server name + server port) and the
-        script root (`SCRIPT_NAME`).''')
+        base URL 是一个用于提取 WSGI URL ，主机(服务器名 + 服务器端口) 和根脚本 
+        (`SCRIPT_NAME`) 的 URL ''')
+        
     del _get_base_url, _set_base_url
 
     def _get_content_type(self):
@@ -385,12 +378,11 @@ class EnvironBuilder(object):
             self.headers['Content-Type'] = value
 
     content_type = property(_get_content_type, _set_content_type, doc='''
-        The content type for the request.  Reflected from and to the
-        :attr:`headers`.  Do not set if you set :attr:`files` or
-        :attr:`form` for auto detection.''')
+        请求的内容类型。The content type for the request.  Reflected from and to the
+        :attr:`headers`.  Do not set if you set :attr:`files` or:attr:`form` for auto detection.''')
     del _get_content_type, _set_content_type
 
-    def _get_content_length(self):
+    def  _get_content_length(self):
         return self.headers.get('Content-Length', type=int)
 
     def _set_content_length(self, value):
@@ -468,17 +460,17 @@ class EnvironBuilder(object):
         self._args = value
 
     args = property(_get_args, _set_args, doc='''
-        The URL arguments as :class:`MultiDict`.''')
+        URL 参数是 :class:`MultiDict`。''') 
     del _get_args, _set_args
 
     @property
     def server_name(self):
-        """The server name (read-only, use :attr:`host` to set)"""
-        return self.host.split(':', 1)[0]
+        """服务器名 (只读， 使用 :attr:`host` 设置)"""
+        return self.host.split(':', 1)[0] 
 
     @property
     def server_port(self):
-        """The server port as integer (read-only, use :attr:`host` to set)"""
+        """整型服务器接口(只读，使用 :attr:`host` 设置)"""
         pieces = self.host.split(':', 1)
         if len(pieces) == 2 and pieces[1].isdigit():
             return int(pieces[1])
@@ -493,9 +485,8 @@ class EnvironBuilder(object):
             pass
 
     def close(self):
-        """Closes all files.  If you put real :class:`file` objects into the
-        :attr:`files` dict you can call this method to automatically close
-        them all in one go.
+        """关闭所有文件。如果把 :class:`file` 对象放入 :attr:`files` 字典，你可
+        以通过调用这个方法自动关闭他们。
         """
         if self.closed:
             return
@@ -589,30 +580,26 @@ class ClientRedirectError(Exception):
 
 
 class Client(object):
-    """This class allows to send requests to a wrapped application.
+    """这个类允许你发送请求给一个包裹的应用。
 
-    The response wrapper can be a class or factory function that takes
-    three arguments: app_iter, status and headers.  The default response
-    wrapper just returns a tuple.
+    响应可以是一个类或者一个有三个参数工厂函数: app_iter, status and headers。默
+    认的响应仅仅是一个元组。
 
-    Example::
+    例如::
 
         class ClientResponse(BaseResponse):
-            ...
+             ...
 
-        client = Client(MyApplication(), response_wrapper=ClientResponse)
+         client = Client(MyApplication(), response_wrapper=ClientResponse)
 
-    The use_cookies parameter indicates whether cookies should be stored and
-    sent for subsequent requests. This is True by default, but passing False
-    will disable this behaviour.
+    use_cookies 参数默认是开启的，无论 cookies 是否被存储，他都会和请求一起传输。
+    但是你也可以关闭 cookie。
 
-    If you want to request some subdomain of your application you may set
-    `allow_subdomain_redirects` to `True` as if not no external redirects
-    are allowed.
+    如果你想要请求应用的子域名，你可以设置 `allow_subdomain_redirects` 为 `True` ，
+    如果为 `False` ,将不允许外部重定向。
 
     .. versionadded:: 0.5
-       `use_cookies` is new in this version.  Older versions did not provide
-       builtin cookie support.
+       `use_cookies` 是在这个版本添加的。老版本不提供内置 cookie 支持。
     """
 
     def __init__(self, application, response_wrapper=None, use_cookies=True,
@@ -748,6 +735,7 @@ class Client(object):
             return environ, response
         return response
 
+
     def get(self, *args, **kw):
         """Like open but method is enforced to GET."""
         kw['method'] = 'GET'
@@ -870,3 +858,6 @@ def run_wsgi_app(app, environ, buffered=False):
                 app_iter = ClosingIterator(app_iter, close_func)
 
     return app_iter, response[0], Headers(response[1])
+
+if __name__ == '__main__':
+    main()
