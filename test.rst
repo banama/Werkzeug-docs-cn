@@ -2,7 +2,7 @@
 单元测试
 ==============
 
-.. module:: werkzeug.test
+.. module:: test
 
 也许你经常需要对你的的应用进行单元测试或者仅仅检查 Python session 的输出。理论上
 讲这是很简单的，你可以伪造一个环境，通过一个假的 `start_response` 遍历应用，但是
