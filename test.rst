@@ -1,5 +1,5 @@
 ==============
-单元测试s
+单元测试
 ==============
 
 .. module:: werkzeug.test
@@ -43,17 +43,15 @@ Headers([('Content-Type', 'text/html; charset=utf-8'), ('Content-Length', '8339'
 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'
 
 
-Environment Building
+环境搭建
 ====================
 
 .. versionadded:: 0.5
 
-The easiest way to interactively test applications is using the
-:class:`EnvironBuilder`.  It can create both standard WSGI environments
-and request objects.
+交互测试应用 最简单的方法是使用 :class:`EnvironBuilder` 类。它可以创建标准 WSGI 
+环境和请求对象。
 
-The following example creates a WSGI environment with one uploaded file
-and a form field:
+下面的例子创建了一个上传文件和文件表单的 WSGI 环境:
 
 >>> from werkzeug.test import EnvironBuilder
 >>> from StringIO import StringIO
@@ -61,8 +59,7 @@ and a form field:
 ...      'file': (StringIO('my file contents'), 'test.txt')})
 >>> env = builder.get_environ()
 
-The resulting environment is a regular WSGI environment that can be used for
-further processing:
+返回的环境是一个新的 WSGI 环境，可用于进一步的处理:
 
 >>> from werkzeug.wrappers import Request
 >>> req = Request(env)
@@ -73,12 +70,11 @@ u'this is some text'
 >>> req.files['file'].read()
 'my file contents'
 
-The :class:`EnvironBuilder` figures out the content type automatically if you
-pass a dict to the constructor as `data`.  If you provide a string or an
-input stream you have to do that yourself.
+当你将一个字典传给构造函数数据， :class:`EnvironBuilder` 会自动自动找出内容类型。如
+过你传的似乎一个字符串或者输入字符流，你不得不自己来做这些处理。
 
-By default it will try to use ``application/x-www-form-urlencoded`` and only
-use ``multipart/form-data`` if files are uploaded:
+默认地它将会尝试使用 ``application/x-www-form-urlencoded`` ，如果文件被上传则只
+使用 ``multipart/form-data`` :
 
 >>> builder = EnvironBuilder(method='POST', data={'foo': 'bar'})
 >>> builder.content_type
@@ -87,15 +83,14 @@ use ``multipart/form-data`` if files are uploaded:
 >>> builder.content_type
 'multipart/form-data'
 
-If a string is provided as data (or an input stream) you have to specify
-the content type yourself:
+如果传入一个字符串(或一个输入流)，你必须自己指定内容的类型:
 
 >>> builder = EnvironBuilder(method='POST', data='{"json": "this is"}')
 >>> builder.content_type
 >>> builder.content_type = 'application/json'
 
 
-Testing API
+测试 API
 ===========
 
 .. autoclass:: EnvironBuilder
@@ -103,41 +98,40 @@ Testing API
 
    .. attribute:: path
 
-      The path of the application.  (aka `PATH_INFO`)
+      应用的地址。(又叫 `PATH_INFO`)
 
    .. attribute:: charset
 
-      The charset used to encode unicode data.
+      编码 unicode 数据的字符集。
 
    .. attribute:: headers
 
-      A :class:`Headers` object with the request headers.
+      一个带着请求 headers的 :class:`Headers` 对象。
 
    .. attribute:: errors_stream
 
-      The error stream used for the `wsgi.errors` stream.
+      用于 `wsgi.errors` 流的错误流。
 
    .. attribute:: multithread
 
-      The value of `wsgi.multithread`
+      `wsgi.multithread` 的值。
 
    .. attribute:: multiprocess
 
-      The value of `wsgi.multiprocess`
+      `wsgi.multiprocess` 的值。
 
    .. attribute:: environ_base
 
-      The dict used as base for the newly create environ.
+      新创建环境的基本字典。
 
    .. attribute:: environ_overrides
 
-      A dict with values that are used to override the generated environ.
+      用于覆盖生成环境的带值字典。
 
    .. attribute:: input_stream
     
-      The optional input stream.  This and :attr:`form` / :attr:`files`
-      is mutually exclusive.  Also do not provide this stream if the
-      request method is not `POST` / `PUT` or something comparable.
+      可选选项输入流。这个和 :attr:`form` / :attr:`files` 是相互独立的。同时如果
+      请求方法不是 `POST` / `PUT` 或其他类似方法，不要提供输入流。
 
 .. autoclass:: Client
 
