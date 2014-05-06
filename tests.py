@@ -378,8 +378,8 @@ class EnvironBuilder(object):
             self.headers['Content-Type'] = value
 
     content_type = property(_get_content_type, _set_content_type, doc='''
-        请求的内容类型。The content type for the request.  Reflected from and to the
-        :attr:`headers`.  Do not set if you set :attr:`files` or:attr:`form` for auto detection.''')
+        请求的内容类型。反射给 :attr:`headers`。如果你设置了 :attr:`files` 和
+        :attr:`form` 属性就不能设置内容类型。''')
     del _get_content_type, _set_content_type
 
     def  _get_content_length(self):
@@ -392,9 +392,8 @@ class EnvironBuilder(object):
             self.headers['Content-Length'] = str(value)
 
     content_length = property(_get_content_length, _set_content_length, doc='''
-        The content length as integer.  Reflected from and to the
-        :attr:`headers`.  Do not set if you set :attr:`files` or
-        :attr:`form` for auto detection.''')
+        整数的长度，反射给 :attr:`headers`。如果你设置了 :attr:`files` 或 :attr:`form`
+        属性不要设置这个参数。''')
     del _get_content_length, _set_content_length
 
     def form_property(name, storage, doc):
@@ -428,8 +427,7 @@ class EnvironBuilder(object):
         self._form = self._files = None
 
     input_stream = property(_get_input_stream, _set_input_stream, doc='''
-        An optional input stream.  If you set this it will clear
-        :attr:`form` and :attr:`files`.''')
+        一个可选的输入流。如果你设置它，将会清空 :attr:`form` 和 :attr:`files`。''')
     del _get_input_stream, _set_input_stream
 
     def _get_query_string(self):
@@ -444,8 +442,7 @@ class EnvironBuilder(object):
         self._args = None
 
     query_string = property(_get_query_string, _set_query_string, doc='''
-        The query string.  If you set this to a string :attr:`args` will
-        no longer be available.''')
+        查询字符串。如果你设置它， :attr:`args` 属性将不再可用。''')
     del _get_query_string, _set_query_string
 
     def _get_args(self):
@@ -502,7 +499,7 @@ class EnvironBuilder(object):
         self.closed = True
 
     def get_environ(self):
-        """Return the built environ."""
+        """返回内置环境。"""
         input_stream = self.input_stream
         content_length = self.content_length
         content_type = self.content_type
@@ -562,10 +559,9 @@ class EnvironBuilder(object):
         return result
 
     def get_request(self, cls=None):
-        """Returns a request with the data.  If the request class is not
-        specified :attr:`request_class` is used.
+        """返回一个带数据的请求。如果没有指定请求类，将会是用 :attr:`request_class`。
 
-        :param cls: The request wrapper to use.
+        :param cls: 使用 request 包装。
         """
         if cls is None:
             cls = self.request_class
@@ -672,29 +668,23 @@ class Client(object):
             self.response_wrapper = old_response_wrapper
 
     def open(self, *args, **kwargs):
-        """Takes the same arguments as the :class:`EnvironBuilder` class with
-        some additions:  You can provide a :class:`EnvironBuilder` or a WSGI
-        environment as only argument instead of the :class:`EnvironBuilder`
-        arguments and two optional keyword arguments (`as_tuple`, `buffered`)
-        that change the type of the return value or the way the application is
-        executed.
+        """和 :class:`EnvironBuilder` 一样的参数还有一些补充: 你可以提供一个
+        :class:`EnvironBuilder` 类或一个 WSGI 环境代替 :class:`EnvironBuilder`
+        类作为参数。同时有两个可选参数 (`as_tuple`, `buffered`)，可以改变返回值
+        的类型或应用执行方法。
 
         .. versionchanged:: 0.5
-           If a dict is provided as file in the dict for the `data` parameter
-           the content type has to be called `content_type` now instead of
-           `mimetype`.  This change was made for consistency with
-           :class:`werkzeug.FileWrapper`.
+           如果为 `data` 参数提供一个带文件的字典，那么内容类型必须为 `content_type`
+           而不是 `mimetype`。这个改变是为了和 :class:`werkzeug.FileWrapper` 保
+           持一致。
 
-            The `follow_redirects` parameter was added to :func:`open`.
+            `follow_redirects` 参数被添加到 :func:`open`.
 
         Additional parameters:
 
-        :param as_tuple: Returns a tuple in the form ``(environ, result)``
-        :param buffered: Set this to True to buffer the application run.
-                         This will automatically close the application for
-                         you as well.
-        :param follow_redirects: Set this to True if the `Client` should
-                                 follow HTTP redirects.
+        :param as_tuple: 在表格中返回一个元组 ``(environ, result)``。
+        :param buffered: 把这个设为 True 来缓冲区运行应用。这个将会为你自动关闭所有应用。
+        :param follow_redirects: 如果接下来 `Client` HTTP 重定向，这个将会设为 True。
         """
         as_tuple = kwargs.pop('as_tuple', False)
         buffered = kwargs.pop('buffered', False)
@@ -737,32 +727,32 @@ class Client(object):
 
 
     def get(self, *args, **kw):
-        """Like open but method is enforced to GET."""
+        """和 open 相似，但是方法强制执行 GET。"""
         kw['method'] = 'GET'
-        return self.open(*args, **kw)
+        return self.open(*args, **kw) 
 
     def patch(self, *args, **kw):
-        """Like open but method is enforced to PATCH."""
+        """和 open 相似，但是方法强制执行 PATCH。"""
         kw['method'] = 'PATCH'
         return self.open(*args, **kw)
-
+   
     def post(self, *args, **kw):
-        """Like open but method is enforced to POST."""
+        """和 open 相似，但是方法强制执行 POST。"""
         kw['method'] = 'POST'
         return self.open(*args, **kw)
 
-    def head(self, *args, **kw):
-        """Like open but method is enforced to HEAD."""
+    def head(self, *args, **kw): 
+        """和 open 相似，但是方法强制执行 HEAD。"""
         kw['method'] = 'HEAD'
         return self.open(*args, **kw)
 
     def put(self, *args, **kw):
-        """Like open but method is enforced to PUT."""
+        """和 open 相似，但是方法强制执行 PUT。"""
         kw['method'] = 'PUT'
         return self.open(*args, **kw)
 
     def delete(self, *args, **kw):
-        """Like open but method is enforced to DELETE."""
+        """和 open 相似，但是方法强制执行 DELETE。"""
         kw['method'] = 'DELETE'
         return self.open(*args, **kw)
 
