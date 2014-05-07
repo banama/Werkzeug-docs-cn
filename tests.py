@@ -774,19 +774,15 @@ class Client(object):
 
 
 def create_environ(*args, **kwargs):
-    """Create a new WSGI environ dict based on the values passed.  The first
-    parameter should be the path of the request which defaults to '/'.  The
-    second one can either be an absolute path (in that case the host is
-    localhost:80) or a full path to the request with scheme, netloc port and
-    the path to the script.
+    """根据传入的值创建一个 WSGI 环境。第一个参数应该是请求的路径，默认为 '/'。
+    另一个参数或者是一个绝对路径(在这个例子中主机是 localhost:80)或请求的完整
+    路径，端口和脚本路径。
 
-    This accepts the same arguments as the :class:`EnvironBuilder`
-    constructor.
+    它和 :class:`EnvironBuilder` 构造函数接受相同的参数。
 
     .. versionchanged:: 0.5
-       This function is now a thin wrapper over :class:`EnvironBuilder` which
-       was added in 0.5.  The `headers`, `environ_base`, `environ_overrides`
-       and `charset` parameters were added.
+       这个函数现在是一个 :class:`EnvironBuilder` 包裹，在 0.5 版本被添加。需要 
+       `headers`, `environ_base`, `environ_overrides` 和 `charset` 参数。
     """
     builder = EnvironBuilder(*args, **kwargs)
     try:
@@ -796,21 +792,19 @@ def create_environ(*args, **kwargs):
 
 
 def run_wsgi_app(app, environ, buffered=False):
-    """Return a tuple in the form (app_iter, status, headers) of the
-    application output.  This works best if you pass it an application that
-    returns an iterator all the time.
+    """返回一个应用输出的元组形式 (app_iter, status, headers)。如果你通过应用
+    返回一个迭代器他将会工作的更好。
 
-    Sometimes applications may use the `write()` callable returned
-    by the `start_response` function.  This tries to resolve such edge
-    cases automatically.  But if you don't get the expected output you
-    should set `buffered` to `True` which enforces buffering.
+    有时应用可以使用 `start_ewsponse` 返回的 `write()` 回调函数。这将会自动解
+    决边界情况。如果没有得到预期输出，你应该将 `buffered` 设为 `True` 执行
+    buffering
 
-    If passed an invalid WSGI application the behavior of this function is
-    undefined.  Never pass non-conforming WSGI applications to this function.
+    如果传入一个错误的应用，这个函数将会是未定义的。不要给这个函数传入一个不标准
+    的 WSGI 应用。
 
-    :param app: the application to execute.
-    :param buffered: set to `True` to enforce buffering.
-    :return: tuple in the form ``(app_iter, status, headers)``
+    :param app: 要执行的应用。
+    :param buffered: 设为 `True` 来执行 buffering.
+    :return: 元组形式 ``(app_iter, status, headers)``
     """
     environ = _get_environ(environ)
     response = []
