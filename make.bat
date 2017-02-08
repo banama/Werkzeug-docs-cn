@@ -92,4 +92,12 @@ or in _build/linkcheck/output.txt.
 	goto end
 )
 
+if "%1" == "pdf" (
+   %SPHINXBUILD% -b pdf %ALLSPHINXOPTS% %BUILDDIR%/pdf
+   if errorlevel 1 exit /b 1
+   echo.
+   echo.Build finished. The pdf files are in %BUILDDIR%/pdf.
+   goto end
+)
+
 :end
